@@ -1,0 +1,7 @@
+plugins {
+    id "java-library"
+}
+
+dependencies {
+    api "com.nimbusds:nimbus-jose-jwt:10.4.2"
+}

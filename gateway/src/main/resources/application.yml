@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: auth
+              uri: ${SHORTENER_URI:http://localhost:8081}
+              predicates:
+                - Path=/auth/**
+            - id: api
+              uri: ${SHORTENER_URI:http://localhost:8081}
+              predicates:
+                - Path=/api/**
+            - id: redirect
+              uri: ${SHORTENER_URI:http://localhost:8081}
+              predicates:
+                - Path=/{code}
+                - Method=GET
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:cs-foundations-spring-dev-secret-32b}
+    issuer: cs-foundations-spring
+    ttl-seconds: 3600
+  rate-limit:
+    capacity: 20
+    refill-per-second: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
